@@ -11,15 +11,14 @@ import { Pokemon } from '../../Services/pokemon';
 export class Home implements OnInit {
   constructor(private pokemonService: Pokemon){}
   pokemons: any = {}
-  nome = ''
+  nome:string = ''
 
   ngOnInit(): void {
     this.pokemonService.getPokemons().subscribe((pkms) => {
       this.pokemons = pkms
+      console.log(this.pokemons)
+      this.nome = this.pokemons.results[468].name
     })
-    console.log(this.pokemons)
-    console.log(this.pokemons.results[0].name)
-    // this.nome = this.pokemons.result[0].name
   }
 
 }
