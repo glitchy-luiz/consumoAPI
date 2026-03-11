@@ -1,4 +1,4 @@
-import { Component, input, OnInit } from '@angular/core';
+import { Component, effect, input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Pokemon } from '../../Services/pokemon';
 
 @Component({
@@ -8,16 +8,53 @@ import { Pokemon } from '../../Services/pokemon';
   styleUrl: './card.scss',
 })
 export class Card implements OnInit{
-  constructor(private pokemonService:Pokemon){}
   nome = input.required<string>()
   type1:string = ''
+  type2: string = ''
   sprite: string= ''
-
+  loading = true
+  
+  constructor(private pokemonService:Pokemon){}
+  
   ngOnInit(): void {
-    this.pokemonService.getPokemonByName(this.nome()).subscribe((pkm: any) => {
-      this.type1 = pkm.types[0].type.name
-      this.sprite = pkm.sprites.front_default
+    const nome = this.nome()
+
+    if (!nome) {
+      console.warn('Nome inválido recebido pelo Card');
+      this.loading = false;
+      return;
+    }
+
+    this.pokemonService.getPokemonByName(this.nome()).subscribe({
+      next: (pkm:any) =>{
+        this.type1 = pkm.types[0].type.name
+        this.type2 = pkm.types[1]?.type?.name || ''
+        this.sprite = pkm.sprites.front_default
+        this.loading = false
+      },
+      error: (error) =>{
+        console.log(error)
+        this.loading = false
+      }
     })
   }
+
+  // ngOnChanges(changes: SimpleChanges) {
+  //   if (changes['nome'] && changes['nome'].currentValue) {
+  //     this.loading = true;
+  //     this.pokemonService.getPokemonByName(this.nome()).subscribe({
+  //       next: (pkm:any) =>{
+  //         this.type1 = pkm.types[0].type.name
+  //         this.type2 = pkm.types[1]?.type?.name || ''
+  //         this.sprite = pkm.sprites.front_default
+  //         this.loading = false
+  //       },
+  //       error: (error) =>{
+  //         console.log(error)
+  //         this.loading = false
+  //       }
+  //     });
+  //   }
+  // }
 
 }

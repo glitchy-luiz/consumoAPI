@@ -1,5 +1,5 @@
-@if(type1){
+@if(!loading){
     <p>{{nome()}}</p>
-    <p>tipo: {{type1}}</p>
-    <img src={{sprite}} alt="">
+    <p>tipos: {{type1}} {{ type2? 'e ' + type2 : '' }}</p>
+    <!-- <img [src]=sprite alt=""> -->
 }
