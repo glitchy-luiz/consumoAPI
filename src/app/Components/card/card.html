@@ -1,5 +1,8 @@
-@if(!loading){
-    <p>{{nome()}}</p>
-    <p>tipos: {{type1}} {{ type2? 'e ' + type2 : '' }}</p>
-    <!-- <img [src]=sprite alt=""> -->
+<p>{{nome()}}</p>
+
+@if(!type1()){
+    <p>Carregando...</p>
+} @else {
+    <p>tipos: {{type1()}} {{ type2? 'e ' + type2 : '' }}</p>
+    <img [src]="sprite" alt="">
 }

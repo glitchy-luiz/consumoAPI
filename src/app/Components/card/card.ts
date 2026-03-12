@@ -1,4 +1,4 @@
-import { Component, effect, input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, effect, input, OnInit, signal } from '@angular/core';
 import { Pokemon } from '../../Services/pokemon';
 
 @Component({
@@ -7,54 +7,38 @@ import { Pokemon } from '../../Services/pokemon';
   templateUrl: './card.html',
   styleUrl: './card.scss',
 })
-export class Card implements OnInit{
-  nome = input.required<string>()
-  type1:string = ''
-  type2: string = ''
-  sprite: string= ''
-  loading = true
+export class Card{
   
-  constructor(private pokemonService:Pokemon){}
+  nome = input.required<string>();
   
-  ngOnInit(): void {
-    const nome = this.nome()
+  type1 = signal('');
+  type2 = '';
+  sprite = '';
+  
+  constructor(private pokemonService: Pokemon){
+    effect(() => {
+      const nome = this.nome();
+      this.reset()
+      
+      if (!nome) { return; }
 
-    if (!nome) {
-      console.warn('Nome inválido recebido pelo Card');
-      this.loading = false;
-      return;
-    }
-
-    this.pokemonService.getPokemonByName(this.nome()).subscribe({
-      next: (pkm:any) =>{
-        this.type1 = pkm.types[0].type.name
-        this.type2 = pkm.types[1]?.type?.name || ''
-        this.sprite = pkm.sprites.front_default
-        this.loading = false
-      },
-      error: (error) =>{
-        console.log(error)
-        this.loading = false
-      }
+      this.pokemonService.getPokemonByName(nome).subscribe({
+        next: (pkm: any) => {
+          this.type1.set(pkm?.types?.[0]?.type?.name ?? 'desconhecido');
+          this.type2 = pkm?.types?.[1]?.type?.name ?? '';
+          this.sprite = pkm?.sprites?.front_default ?? '';
+        },
+        error: (err) => {
+          console.error(err);
+          this.reset()
+        }
+      });
     })
   }
-
-  // ngOnChanges(changes: SimpleChanges) {
-  //   if (changes['nome'] && changes['nome'].currentValue) {
-  //     this.loading = true;
-  //     this.pokemonService.getPokemonByName(this.nome()).subscribe({
-  //       next: (pkm:any) =>{
-  //         this.type1 = pkm.types[0].type.name
-  //         this.type2 = pkm.types[1]?.type?.name || ''
-  //         this.sprite = pkm.sprites.front_default
-  //         this.loading = false
-  //       },
-  //       error: (error) =>{
-  //         console.log(error)
-  //         this.loading = false
-  //       }
-  //     });
-  //   }
-  // }
-
+  
+  reset(){
+    this.type1.set('')
+    this.type2 = ''
+    this.sprite = ''
+  }
 }
