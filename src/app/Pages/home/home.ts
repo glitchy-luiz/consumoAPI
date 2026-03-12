@@ -19,7 +19,7 @@ export class Home implements OnInit {
         this.pokemons = pkms
   
         if (pkms.results){
-          this.nome = this.pokemons.results[654].name
+          this.nome = this.pokemons.results[652].name
         }
       },
       error: (err) => {
