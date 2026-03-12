@@ -1,5 +1,46 @@
-@if(!loading){
+<!-- @defer (on timer(500ms)) {
     <p>{{nome()}}</p>
     <p>tipos: {{type1}} {{ type2? 'e ' + type2 : '' }}</p>
-    <!-- <img [src]=sprite alt=""> -->
+    <img [src]=sprite alt="">
+} @loading (minimum 300ms) {
+    <p>Carregando...</p>
+} @placeholder (minimum 400ms) {
+    <p>Iniciando..</p>
+} @error {
+    <p>algo deu errado!</p>
+}
+
+@defer (when type1) {
+    <p>{{nome()}}</p>
+    <p>tipos: {{type1}} {{ type2? 'e ' + type2 : '' }}</p>
+    <img [src]=sprite alt="">
+} @loading (minimum 100ms){
+    <p>Carregando...</p>
+} @placeholder (minimum 400ms) {
+    <p>Iniciando..</p>
+} @error {
+    <p>algo deu errado!</p>
+} -->
+
+<!-- @if(!loading){
+    <p>{{nome()}}</p>
+    <p>tipos: {{type1}} {{ type2? 'e ' + type2 : '' }}</p>
+    <img [src]=sprite alt="">
+} @else if(loading) {
+    <p>Carregando...</p>
+} -->
+
+
+@if (loading()) {
+  <p>Carregando...</p>
+} @else {
+  @if (!error()) {
+    <p>{{ nome() }}</p>
+    <p>
+      tipos: {{ type1() }}{{ type2() ? (' e ' + type2()) : '' }}
+    </p>
+    <!-- <img [src]="sprite()" alt="Sprite do Pokémon" /> -->
+  } @else {
+    <p>{{ error() }}</p>
+  }
 }
