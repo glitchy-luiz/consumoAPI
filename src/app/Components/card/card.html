@@ -1,8 +1,12 @@
-<p>{{nome()}}</p>
-
-@if(!type1()){
+@if(!objPkm()){
     <p>Carregando...</p>
 } @else {
-    <p>tipos: {{type1()}} {{ type2? 'e ' + type2 : '' }}</p>
-    <img [src]="sprite" alt="">
+    <div class="card">
+        <div class="cardHeader">
+            <h4>{{objPkm()?.nome}}</h4>
+            <p>tipos: {{objPkm()?.tipo1}} {{ objPkm()?.tipo2? 'e ' + objPkm()?.tipo2 : '' }}</p>
+        </div>
+        <p class="id">Pokedex: {{objPkm()?.id}}</p>
+        <img class="sprite" [src]="objPkm()?.sprite" alt="">
+    </div>
 }

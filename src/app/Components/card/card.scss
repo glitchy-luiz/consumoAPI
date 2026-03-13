@@ -1,0 +1,25 @@
+.card{
+    max-width: 200px;
+    height: 220px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    border: 2px solid red;
+}
+
+.cardHeader{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 10px;
+}
+
+.sprite{
+    width: 100px;
+    height: 100px;
+    margin-left: 20%;
+}
+
+.id{
+    margin-top: 0;
+}

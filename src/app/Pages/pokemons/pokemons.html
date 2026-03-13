@@ -1,0 +1,13 @@
+<app-buscar (pesquisa)="pesq($event)"></app-buscar>
+<button (click)="home()">Voltar</button>
+@if(!pokemonsList()){
+    <h2>Carregando...</h2>
+} @else if (!pkm().nome) {
+    <div class="grid">
+        @for (dados of pokemonsList(); track dados; let i = $index) {
+            <app-card [pokemon]="dados"></app-card>
+        }
+    </div>
+} @else {
+    <app-card [pokemon]="pkm()"></app-card>
+}
