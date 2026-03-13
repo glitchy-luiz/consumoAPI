@@ -1,5 +1,5 @@
 <p>Meus times</p>
 <app-buscar (pesquisa)="buscar($event)"></app-buscar>
-@if(nome){
-    <app-card [nome]="nome"></app-card>
+@if(nome()){
+    <app-card [nome]="nome()"></app-card>
 }

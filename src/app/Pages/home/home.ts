@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { Card } from "../../Components/card/card";
 import { Pokemon } from '../../Services/pokemon';
 import { Buscar } from "../buscar/buscar";
@@ -12,7 +12,7 @@ import { Buscar } from "../buscar/buscar";
 export class Home implements OnInit {
   constructor(private pokemonService: Pokemon){}
   pokemons: any = null
-  nome:string | null = null
+  nome = signal<string>('') 
   pesquisa: string = '654'
 
   ngOnInit(): void {
@@ -23,7 +23,7 @@ export class Home implements OnInit {
         if (pkms.results){
           const p = parseInt(this.pesquisa)
           console.log(p)
-          this.nome = this.pokemons.results[p].name
+          this.nome.set(this.pokemons.results[p].name)
         }
       },
       error: (err) => {
@@ -40,7 +40,7 @@ export class Home implements OnInit {
         if (pkms.results){
           const p = parseInt(event)
           console.log(p)
-          this.nome = this.pokemons.results[p].name
+          this.nome.set(this.pokemons.results[p].name)
         }
       },
       error: (err) => {
