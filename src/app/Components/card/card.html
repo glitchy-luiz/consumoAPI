@@ -1,7 +1,7 @@
 @if(!objPkm()){
     <p>Carregando...</p>
 } @else {
-    <div class="card">
+    <div class="card" (click)="openDetails()">
         <div class="cardHeader">
             <h4>{{objPkm()?.nome}}</h4>
             <p>tipos: {{objPkm()?.tipo1}} {{ objPkm()?.tipo2? 'e ' + objPkm()?.tipo2 : '' }}</p>
