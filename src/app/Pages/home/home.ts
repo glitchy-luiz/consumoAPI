@@ -13,17 +13,10 @@ import { ICard } from '../../Interfaces/ICard.interface';
 export class Home {
   constructor(private pokemonService: Pokemon, private router: Router){}
   pokemons: any = null
-  pkm = signal<ICard>({
-    nome: '',
-    tipo1: '',
-    tipo2: '',
-    sprite: '',
-    id: ''
-  })
+  pkms = signal<ICard[]>([])
 
-  pesq(event: ICard){
-    const d = event
-    this.pkm.set(d)
+  pesq(event: ICard[]){
+    this.pkms.set(event)
   }
 
   allPokemons(){

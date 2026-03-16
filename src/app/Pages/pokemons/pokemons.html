@@ -5,7 +5,7 @@
     <h2>Carregando...</h2>
 } @else if (error()) {
     <p>{{error()}}</p>
-} @else if (!pkm().nome) {
+} @else if (!pkms()[0].nome) {
     <div class="grid">
         @for (dados of pokemonsList(); track dados; let i = $index) {
             @defer (on viewport) {
@@ -16,5 +16,7 @@
         }
     </div>
 } @else {
-    <app-card [pokemon]="pkm()"></app-card>
+    @for(pkm of pkms(); track $index){
+        <app-card [pokemon]="pkm"></app-card>
+    }
 }

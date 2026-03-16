@@ -25,7 +25,7 @@ export class Pokemon {
   }
 
   getPokemonsByType(type: string){
-    return this.http.get(this.url + '/type/' + type)
+    return this.http.get(this.url + 'type/' + type)
   }
 
   transformCardObj(pkm: any): ICard{
@@ -61,6 +61,5 @@ export class Pokemon {
         return card;
       })
     );
-
   }
 }
