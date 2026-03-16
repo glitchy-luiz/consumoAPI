@@ -11,14 +11,6 @@ import { ICard } from '../../Interfaces/ICard.interface';
 })
 export class Buscar {
   pesquisa = output<ICard>()
-  // pokemon = signal<ICard>({
-  //   nome: '',
-  //   tipo1: '',
-  //   tipo2: '',
-  //   sprite: '',
-  //   id: ''
-  // })
-  // loading = signal(false)
 
   barra = new FormGroup({
     busca: new FormControl(''),
@@ -31,11 +23,11 @@ export class Buscar {
     if (!termo) {
       return;
     }
-
-    this.pokemonService.getPokemonByName(termo).subscribe((pkm: any | null) => {
+// req trocada para verificar cache, e com isso o return já vem tratado
+    this.pokemonService.getCardCached(termo).subscribe((pkm: any | null) => {
       if (!pkm) return;
-      const card:ICard = this.pokemonService.transformCardObj(pkm);
-      this.pesquisa.emit(card);
+      // const card:ICard = this.pokemonService.transformCardObj(pkm);
+      this.pesquisa.emit(pkm);
     })
   }
 }

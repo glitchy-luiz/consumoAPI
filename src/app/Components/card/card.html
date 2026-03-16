@@ -7,6 +7,6 @@
             <p>tipos: {{objPkm()?.tipo1}} {{ objPkm()?.tipo2? 'e ' + objPkm()?.tipo2 : '' }}</p>
         </div>
         <p class="id">Pokedex: {{objPkm()?.id}}</p>
-        <img class="sprite" [src]="objPkm()?.sprite" alt="">
+        <img class="sprite" [src]="objPkm()?.sprite" alt="" loading="lazy" decoding="async">
     </div>
 }
