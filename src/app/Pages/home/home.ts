@@ -1,52 +1,33 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { Card } from "../../Components/card/card";
 import { Pokemon } from '../../Services/pokemon';
-import { Buscar } from "../buscar/buscar";
-
+import { Buscar } from "../../Components/buscar/buscar";
+import { Router } from '@angular/router';
+import { ICard } from '../../Interfaces/ICard.interface';
 @Component({
   selector: 'app-home',
   imports: [Card, Buscar],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
-export class Home implements OnInit {
-  constructor(private pokemonService: Pokemon){}
+export class Home {
+  constructor(private pokemonService: Pokemon, private router: Router){}
   pokemons: any = null
-  nome = signal<string>('') 
-  pesquisa: string = '654'
+  pkm = signal<ICard>({
+    nome: '',
+    tipo1: '',
+    tipo2: '',
+    sprite: '',
+    id: ''
+  })
 
-  ngOnInit(): void {
-    this.pokemonService.getPokemons().subscribe({
-      next: (pkms:any) => {
-        this.pokemons = pkms
-  
-        if (pkms.results){
-          const p = parseInt(this.pesquisa)
-          console.log(p)
-          this.nome.set(this.pokemons.results[p].name)
-        }
-      },
-      error: (err) => {
-        console.log('Erro home:', err)
-      }
-    })
+  pesq(event: ICard){
+    const d = event
+    this.pkm.set(d)
   }
 
-  buscar(event:string){
-    this.pokemonService.getPokemons().subscribe({
-      next: (pkms:any) => {
-        this.pokemons = pkms
-  
-        if (pkms.results){
-          const p = parseInt(event)
-          console.log(p)
-          this.nome.set(this.pokemons.results[p].name)
-        }
-      },
-      error: (err) => {
-        console.log('Erro home:', err)
-      }
-    })
+  allPokemons(){
+    this.router.navigate(['pokemons'])
   }
 
 }
