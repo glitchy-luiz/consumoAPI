@@ -28,6 +28,14 @@ export class Pokemon {
     return this.http.get(this.url + 'type/' + type)
   }
 
+  getPokemonSpecies(specie: string){
+    return this.http.get(this.url + 'pokemon-species/' + specie)
+  }
+
+  getByUrl(url: string){
+    return this.http.get(url)
+  }
+
   transformCardObj(pkm: any): ICard{
     const pokemon = MockCard.giveEmptyCard()
     pokemon!.nome = pkm?.name

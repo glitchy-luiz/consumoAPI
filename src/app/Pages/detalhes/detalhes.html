@@ -1,21 +1,61 @@
 <button (click)="home()">Voltar</button>
-<h1>{{pokemon().name}}</h1>
-<p>{{pokemon().id}}</p>
-<img [src]="pokemon().sprites.front_default" alt="">
-<p>Tipos: {{pokemon().types[0].type.name}} {{pokemon().types[1].type.name}}</p>
-<p>Status</p>
-<p>{{pokemon().stats[0].stat.name}}: {{pokemon().stats[0].base_stat}}</p>
-<p>{{pokemon().stats[1].stat.name}}: {{pokemon().stats[1].base_stat}}</p>
-<p>{{pokemon().stats[2].stat.name}}: {{pokemon().stats[2].base_stat}}</p>
-<p>{{pokemon().stats[3].stat.name}}: {{pokemon().stats[3].base_stat}}</p>
-<p>{{pokemon().stats[4].stat.name}}: {{pokemon().stats[4].base_stat}}</p>
-<p>{{pokemon().stats[5].stat.name}}: {{pokemon().stats[5].base_stat}}</p>
+@defer (on viewport) {
+    <div class="grid">
+        <div class="rightContent">
+            <div class="head">
+                <h1>{{pokemon().name}}</h1>
+                <p>Pokedex: {{pokemon().id}}</p>
+            </div>
+            <img class="sprite" [src]="pokemon().sprites.front_default" alt="">
+            <h3>Tipos: {{pokemon().types[0].type.name}} {{pokemon().types[1] ? 'e ' + pokemon().types[1].type.name : ''}}</h3>
+            <div class="evolutions">
+                <h3>Evoluções</h3>
+                <ol>
+                    <li>{{evolution().chain.species.name}}</li>
+                    <li>{{evolution().chain.evolves_to[0] ? evolution().chain.evolves_to[0].species.name : ''}}</li>
+                    <li>{{(evolution().chain.evolves_to[0] && evolution().chain.evolves_to[0].evolves_to[0]) ? evolution().chain.evolves_to[0].evolves_to[0].species.name : ''}}</li>
+                </ol>
+            </div>
+            <div class="habilities">
+                <h3>Habilidades</h3>
+            </div>
+            <div class="moves">
+                <h3 (click)="showMoves = !showMoves">Moves</h3>
+                @if(showMoves){
+                    @for(move of pokemon().moves; track $index){
+                        <p>{{move.move.name}}</p>
+                    }
+                }
+            </div>
+        </div>
 
-<p>Moves</p>
-@for(move of pokemon().moves; track $index){
-    <p>{{move.move.name}}</p>
+        <div class="leftContent">
+            <div class="stats">
+                <h3>Status</h3>
+                <p>{{pokemon().stats[0].stat.name}}: {{pokemon().stats[0].base_stat}}</p>
+                <p>{{pokemon().stats[1].stat.name}}: {{pokemon().stats[1].base_stat}}</p>
+                <p>{{pokemon().stats[2].stat.name}}: {{pokemon().stats[2].base_stat}}</p>
+                <p>{{pokemon().stats[3].stat.name}}: {{pokemon().stats[3].base_stat}}</p>
+                <p>{{pokemon().stats[4].stat.name}}: {{pokemon().stats[4].base_stat}}</p>
+                <p>{{pokemon().stats[5].stat.name}}: {{pokemon().stats[5].base_stat}}</p>
+            </div>
+            <div class="weakness">
+                <h3>Vantagens:</h3>
+                <h3>Franquezas:</h3>
+                <h3>Resistências:</h3>
+            </div>
+            <div class="details">
+                <h3>Detalhes</h3>
+                <p>Altura: {{pokemon().height}}</p>
+                <p>Peso: {{pokemon().weight}}</p>
+                <p>Ganho de Exp: {{speciesInfo().growth_rate.name}}</p>
+                <p>Egg group: {{speciesInfo().egg_groups[0].name}}</p>
+            </div>
+        </div>
+    </div>
+
+    <button>Add pokemon</button>
+    
+} @placeholder {
+    <h1>Carregando...</h1>
 }
-
-<p>Detalhes</p>
-<p>Altura: {{pokemon().height}}</p>
-<p>Peso: {{pokemon().weight}}</p>

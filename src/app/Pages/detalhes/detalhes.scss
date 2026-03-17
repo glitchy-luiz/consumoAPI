@@ -1,0 +1,20 @@
+*{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.head{
+    display: flex;
+    align-items: center;
+    gap: 15px
+}
+
+.sprite{
+    width: 250px;
+    height: 250px;
+}
+
+.grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem
+}
