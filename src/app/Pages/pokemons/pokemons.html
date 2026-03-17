@@ -16,7 +16,9 @@
         }
     </div>
 } @else {
-    @for(pkm of pkms(); track $index){
-        <app-card [pokemon]="pkm"></app-card>
-    }
+    <div class="grid">
+        @for(pkm of pkms(); track $index){
+            <app-card [pokemon]="pkm"></app-card>
+        }
+    </div>
 }

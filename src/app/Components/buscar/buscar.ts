@@ -23,18 +23,17 @@ export class Buscar {
 
   pesquisar(){
     const termo = this.barra.controls['busca'].value?.trim();
-    if (!termo) return;
+    if (termo === '') this.pesquisa.emit([])
     // req trocada para verificar cache, e com isso o return já vem tratado
-    this.pokemonService.getCardCached(termo).pipe(takeUntilDestroyed(this.destroyRef))
+    this.pokemonService.getCardCached(termo!).pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next: (pkm) =>{
-        if (!pkm) return;
         this.pesquisa.emit([pkm]);
+        if (!pkm)  this.pesquisarTipo(termo!);
         console.log([pkm])
       },
-      error: (err)=>{
-        // console.log(err)
-        this.pesquisarTipo(termo)
+      error: ()=>{
+        this.pesquisarTipo(termo!)
       }
     })
   }
@@ -55,16 +54,19 @@ export class Buscar {
               map((card) => ({card, index}))
             ),
             limite
+          ),
+          toArray(),
+          map((items) => 
+            items.sort((a,b) => a.index - b.index).map((x) => x.card)
           )
         );
       }),
       takeUntilDestroyed(this.destroyRef),
       // finalize(()=> this.carregando.set(false))
     )
-    .subscribe((pkms: any) => {
-      if (!pkms || pkms.lenght === 0) return;
-      this.pesquisa.emit(pkms.pokemon);
-      console.log(pkms)
+    .subscribe((pkms: ICard[]) => {
+      if (!pkms) return;
+      this.pesquisa.emit(pkms);
     })
   }
 }
