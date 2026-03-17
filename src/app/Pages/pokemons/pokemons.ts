@@ -14,13 +14,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './pokemons.scss',
 })
 export class Pokemons implements OnInit {
-  pkm = signal<ICard>({
+  pkms = signal<ICard[]>([{
     nome: '',
     tipo1: '',
     tipo2: '',
     sprite: '',
     id: ''
-  })
+  }])
   pokemonsList = signal<ICard[]>([])
   carregando = signal<boolean>(false)
   error = signal<string | null>(null)
@@ -70,9 +70,8 @@ export class Pokemons implements OnInit {
     })
   }
 
-  pesq(event:ICard){
-    const d = event
-    this.pkm.set(d)
+  pesq(event:ICard[]){
+    this.pkms.set(event)
   }
 
   home(){

@@ -1,6 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { Pokemon } from '../../Services/pokemon';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-detalhes',
@@ -12,7 +12,7 @@ export class Detalhes implements OnInit{
   pokedexId: string | null = null
   pokemon:any = signal('')
 
-  constructor(private pokemonService:Pokemon, private activeRoute:ActivatedRoute){
+  constructor(private pokemonService:Pokemon, private activeRoute:ActivatedRoute, private router:Router){
   }
   
   ngOnInit(): void {
@@ -26,5 +26,9 @@ export class Detalhes implements OnInit{
         console.log(err)
       }
     })
+  }
+
+  home(){
+    this.router.navigate([''])
   }
 }
