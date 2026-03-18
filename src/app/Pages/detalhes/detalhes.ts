@@ -2,6 +2,9 @@ import { Component, OnInit, signal } from '@angular/core';
 import { Pokemon } from '../../Services/pokemon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { subscribe } from 'diagnostics_channel';
+import { IDetalhesVM } from '../../Interfaces/IDetalhesVM.interface';
+import { firstValueFrom } from 'rxjs';
+import { EvolutionStage, IEvolution, Requirement } from '../../Interfaces/IEvolutionVM.interface';
 
 @Component({
   selector: 'app-detalhes',
@@ -10,53 +13,160 @@ import { subscribe } from 'diagnostics_channel';
   styleUrl: './detalhes.scss',
 })
 export class Detalhes implements OnInit{
-  pokedexId: string | null = null
-  pokemon:any = signal('')
-  speciesInfo: any = signal('')
-  evolution: any = signal('')
+  detalhes = signal<IDetalhesVM | null>(null)
   showMoves: boolean = false
-  evoInfo: any = signal([])
+  // evoInfo: any = signal([])
 
   constructor(private pokemonService:Pokemon, private activeRoute:ActivatedRoute, private router:Router){}
   
   ngOnInit(): void {
-    this.pokedexId = this.activeRoute.snapshot.paramMap.get('id')
-    this.pokemonService.getPokemonByName(this.pokedexId!).subscribe({
-      next: (pkm:any) => {
-        this.pokemon.set(pkm)
-        console.log(pkm)
-        this.loadSpecies()
-      },
-      error: (err)=>{
-        console.log(err)
-      }
-    })
+    const id = this.activeRoute.snapshot.paramMap.get('id')
+    this.loadDetails(id!)
+  }
+  
+  async loadDetails(id: string){
+    // this.pokemonService.getPokemonByName(id).subscribe({
+    //   next: (pkm:any) => {
+    //     this.loadSpecies(pkm)
+    //   },
+    //   error: (err)=>{
+    //     console.log(err)
+    //   }
+    // })
+    
+    const pokemon: any = await firstValueFrom(
+      this.pokemonService.getPokemonByName(id)
+    );
+
+    const species: any = await firstValueFrom(
+      this.pokemonService.getPokemonSpecies(pokemon.species.name)
+    );
+
+    const evolutionChain: any = await firstValueFrom(
+      this.pokemonService.getByUrl(species.evolution_chain.url)
+    );
+
+    const stats = this.statsHandle(pokemon)
+    const moves = pokemon.moves.map((m:any) => m.move.name)
+
+    
+    const evolutionVM: IEvolution = {
+        stages: buildEvolutionStages(evolutionChain.chain),
+      };
+
+    await hydrateEvolutionSprites(evolutionVM, this.pokemonService);
+
+
+    this.detalhes.set({
+      id: pokemon.id,
+      name: pokemon.name,
+      sprite: pokemon.sprites.front_default,
+      types: pokemon.types.map((t:any) => t.type.name),
+
+      stats: stats,
+      moves: moves,
+      evolutions: evolutionVM,
+
+      rawPokemon: pokemon,
+      rawSpecies: species,
+      rawEvolution: evolutionChain,
+    });
 
   }
   
-  loadSpecies(){
-    this.pokemonService.getPokemonSpecies(this.pokemon().species.name).subscribe((specie) => {
-      this.speciesInfo.set(specie)
-      console.log(specie)
-      this.loadEvolutions()
+  // loadSpecies(pkm: any){
+  //   this.pokemonService.getPokemonSpecies(pkm.species.name).subscribe((species) => {
+  //     this.loadEvolutions(pkm, species)
+  //   })
+  // }
+
+  // loadEvolutions(pkm:any ,species: any){
+  //   this.pokemonService.getByUrl(species.evolution_chain.url).subscribe((evo) => {
+      
+  //   })
+  // }
+
+  statsHandle(pkm: any){
+    const maxStats:number = 255
+    
+    const getColor = (percent: number) => {
+      if (percent < 30) return '#e53935';
+      if (percent < 60) return '#fbc02d';
+      return '#43a047';
+    };
+
+    const stats = pkm.stats.map((stat:any) => {
+      const value = stat.base_stat
+      const percent = Math.round((value / maxStats) * 100)
+      return{
+        name: stat.stat.name.toUpperCase(), 
+        value,
+        percent,
+        color: getColor(percent)
+      }
     })
+    return stats
   }
 
-  loadEvolutions(){
-    this.pokemonService.getByUrl(this.speciesInfo().evolution_chain.url).subscribe((evo) => {
-      this.evolution.set(evo)
-      console.log(evo)
-    })
-  }
-
-  verifyEvolution(){
-    if(this.evolution().chain.evolves_to[0]){
-      const detail = this.evolution().chain.evolution_details
-      const name = this.evolution().chain.species.name
-    }
-  }
+  // verifyEvolution(){
+  //   if(this.evolution().chain.evolves_to[0]){
+  //     const detail = this.evolution().chain.evolution_details
+  //     const name = this.evolution().chain.species.name
+  //   }
+  // }
 
   home(){
     this.router.navigate([''])
+  }
+}
+
+function mapEvolutionRequirements(detail: any): Requirement {
+  return {
+    trigger: detail.trigger?.name,
+    minLevel: detail.min_level ?? undefined,
+    item: detail.item?.name,
+    heldItem: detail.held_item?.name,
+    minHappiness: detail.min_happiness ?? undefined,
+    timeOfDay: detail.time_of_day || undefined,
+    knownMove: detail.known_move?.name,
+  };
+}
+
+function buildEvolutionStages(chain: any): EvolutionStage[][] {
+  const stages: EvolutionStage[][] = [];
+
+  function traverse(node: any, level: number) {
+    if (!stages[level]) {
+      stages[level] = [];
+    }
+
+    stages[level].push({
+      name: node.species.name,
+      sprite: '', // será preenchido depois
+      requirements: node.evolution_details.map(mapEvolutionRequirements),
+    });
+
+    node.evolves_to.forEach((next: any) => {
+      traverse(next, level + 1);
+    });
+  }
+
+  traverse(chain, 0);
+
+  return stages;
+}
+
+async function hydrateEvolutionSprites(
+  evolutions: IEvolution,
+  pokemonService: Pokemon
+) {
+  for (const stage of evolutions.stages) {
+    for (const evo of stage) {
+      const pkm:any = await pokemonService
+        .getPokemonByName(evo.name)
+        .toPromise(); // ou firstValueFrom
+
+      evo.sprite = pkm.sprites.front_default;
+    }
   }
 }
