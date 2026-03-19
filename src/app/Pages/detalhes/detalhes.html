@@ -21,7 +21,7 @@
                                 <p>{{ evo.name }}</p>
 
                                 @for (req of evo.requirements; track $index) {
-                                    <small>{{ req.trigger }}: {{ req.minLevel }} {{req.minHappiness ? 'min-happiness:' + req.minHappiness : ''}}</small>
+                                    <small>{{ req.trigger }}: {{ req.minLevel }} {{req.minHappiness ? 'min-happiness:' + req.minHappiness : ''}} {{req.trigger == 'trade' ? req.heldItem : ''}}</small>
                                     <small>{{ req.trigger !='level-up' ? req.item : '' }}</small>
                                 }
                             </div>
@@ -32,14 +32,6 @@
             </div>
             <div class="habilities">
                 <h3>Habilidades</h3>
-            </div>
-            <div class="moves">
-                <h3 (click)="showMoves = !showMoves">Moves</h3>
-                @if(showMoves){
-                    @for(m of detalhes()?.moves; track $index){
-                        <p>{{m}}</p>
-                    }
-                }
             </div>
         </div>
 
@@ -74,6 +66,16 @@
                 <p>Egg group: {{detalhes()?.rawSpecies.egg_groups[0].name}}</p>
             </div>
         </div>
+    </div>
+    <div class="moves">
+        <h3 (click)="showMoves = !showMoves">Moves</h3>
+        @if(showMoves){
+            <div>
+                @for(m of detalhes()?.moves; track $index){
+                    <app-move [moveName]="m"></app-move>
+                }
+            </div>
+        }
     </div>
 
     <button>Add pokemon</button>

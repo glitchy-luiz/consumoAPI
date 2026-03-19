@@ -19,6 +19,12 @@
     gap: 1rem
 }
 
+.gridMove{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(200px, 1fr));
+    gap: 1rem
+}
+
 .evolution {
   cursor: pointer;
   transition: transform 0.2s ease;

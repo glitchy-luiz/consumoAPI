@@ -1,0 +1,17 @@
+@if(!move().nome){
+    <h3>Carregando...</h3>
+} @else {
+    <div class="move" [class]="move().tipo">
+        <div class="head">
+            <p>{{move().classe}}</p>
+            <h2>{{move().nome}}</h2>
+            <p>pp: {{move().pp}}</p>
+        </div>
+        <div class="main">
+            <h3>Poder: {{move().poder}}</h3>
+            <h3>Acurácia: {{move().acuracia}}</h3>
+        </div>
+        <p>{{move().descricao}}</p>
+        <p>{{move().tipo}}</p>
+    </div>
+}

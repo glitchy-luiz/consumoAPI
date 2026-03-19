@@ -4,10 +4,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IDetalhesVM } from '../../Interfaces/IDetalhesVM.interface';
 import { firstValueFrom } from 'rxjs';
 import { EvolutionStage, IEvolution, Requirement } from '../../Interfaces/IEvolutionVM.interface';
+import { Move } from '../../Components/move/move';
 
 @Component({
   selector: 'app-detalhes',
-  imports: [],
+  imports: [Move],
   templateUrl: './detalhes.html',
   styleUrl: './detalhes.scss',
 })
@@ -39,15 +40,14 @@ export class Detalhes implements OnInit{
     const evolutionChain: any = await firstValueFrom(
       this.pokemonService.getByUrl(species.evolution_chain.url)
     );
-    console.log(pokemon)
+    console.log(evolutionChain)
 
     const stats = this.statsHandle(pokemon)
     const moves = pokemon.moves.map((m:any) => m.move.name)
 
-    
     const evolutionVM: IEvolution = {
-        stages: buildEvolutionStages(evolutionChain.chain),
-      };
+      stages: buildEvolutionStages(evolutionChain.chain),
+    };
 
     await hydrateEvolutionSprites(evolutionVM, this.pokemonService);
 
@@ -96,7 +96,6 @@ export class Detalhes implements OnInit{
   }
 
   goToEvolution(name: string){
-    console.log('clicked')
     this.router.navigate(['detalhes/', name])
   }
 }
