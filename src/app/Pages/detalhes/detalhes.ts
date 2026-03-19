@@ -1,7 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { Pokemon } from '../../Services/pokemon';
 import { ActivatedRoute, Router } from '@angular/router';
-import { subscribe } from 'diagnostics_channel';
 import { IDetalhesVM } from '../../Interfaces/IDetalhesVM.interface';
 import { firstValueFrom } from 'rxjs';
 import { EvolutionStage, IEvolution, Requirement } from '../../Interfaces/IEvolutionVM.interface';
@@ -15,24 +14,19 @@ import { EvolutionStage, IEvolution, Requirement } from '../../Interfaces/IEvolu
 export class Detalhes implements OnInit{
   detalhes = signal<IDetalhesVM | null>(null)
   showMoves: boolean = false
-  // evoInfo: any = signal([])
 
   constructor(private pokemonService:Pokemon, private activeRoute:ActivatedRoute, private router:Router){}
   
   ngOnInit(): void {
-    const id = this.activeRoute.snapshot.paramMap.get('id')
-    this.loadDetails(id!)
+    this.activeRoute.paramMap.subscribe(params => {
+      const id = params.get('id')
+      if (!id) return
+      this.loadDetails(id)
+    })
   }
   
   async loadDetails(id: string){
-    // this.pokemonService.getPokemonByName(id).subscribe({
-    //   next: (pkm:any) => {
-    //     this.loadSpecies(pkm)
-    //   },
-    //   error: (err)=>{
-    //     console.log(err)
-    //   }
-    // })
+    this.detalhes.set(null)
     
     const pokemon: any = await firstValueFrom(
       this.pokemonService.getPokemonByName(id)
@@ -45,6 +39,7 @@ export class Detalhes implements OnInit{
     const evolutionChain: any = await firstValueFrom(
       this.pokemonService.getByUrl(species.evolution_chain.url)
     );
+    console.log(pokemon)
 
     const stats = this.statsHandle(pokemon)
     const moves = pokemon.moves.map((m:any) => m.move.name)
@@ -73,18 +68,6 @@ export class Detalhes implements OnInit{
     });
 
   }
-  
-  // loadSpecies(pkm: any){
-  //   this.pokemonService.getPokemonSpecies(pkm.species.name).subscribe((species) => {
-  //     this.loadEvolutions(pkm, species)
-  //   })
-  // }
-
-  // loadEvolutions(pkm:any ,species: any){
-  //   this.pokemonService.getByUrl(species.evolution_chain.url).subscribe((evo) => {
-      
-  //   })
-  // }
 
   statsHandle(pkm: any){
     const maxStats:number = 255
@@ -108,15 +91,13 @@ export class Detalhes implements OnInit{
     return stats
   }
 
-  // verifyEvolution(){
-  //   if(this.evolution().chain.evolves_to[0]){
-  //     const detail = this.evolution().chain.evolution_details
-  //     const name = this.evolution().chain.species.name
-  //   }
-  // }
-
   home(){
     this.router.navigate([''])
+  }
+
+  goToEvolution(name: string){
+    console.log('clicked')
+    this.router.navigate(['detalhes/', name])
   }
 }
 
@@ -142,13 +123,24 @@ function buildEvolutionStages(chain: any): EvolutionStage[][] {
 
     stages[level].push({
       name: node.species.name,
-      sprite: '', // será preenchido depois
+      sprite: '',
       requirements: node.evolution_details.map(mapEvolutionRequirements),
     });
+
+    
+    // if(stages[level].length > 1){
+    //   console.log(stages[level][1].requirements)
+    // } else{
+    //   console.log(stages[level][0].requirements)
+    // }
 
     node.evolves_to.forEach((next: any) => {
       traverse(next, level + 1);
     });
+
+    // for (let i = 0; i < stages[level].length; i++) {
+    //   console.log(stages[level][i].requirements)
+    // }
   }
 
   traverse(chain, 0);

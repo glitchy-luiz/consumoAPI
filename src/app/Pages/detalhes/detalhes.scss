@@ -19,6 +19,15 @@
     gap: 1rem
 }
 
+.evolution {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
 //barra de status
 .stat {
   margin-bottom: 12px;

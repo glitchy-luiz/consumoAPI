@@ -16,13 +16,14 @@
 
                         <div class="evolutions">
                         @for (evo of stage; track $index) {
-                            <div class="evolution">
-                            <img [src]="evo.sprite" />
-                            <p>{{ evo.name }}</p>
+                            <div class="evolution" (click)="goToEvolution(evo.name)">
+                                <img [src]="evo.sprite" />
+                                <p>{{ evo.name }}</p>
 
-                            @for (req of evo.requirements; track $index) {
-                                <small>{{ req.trigger }} {{ req.minLevel }}</small>
-                            }
+                                @for (req of evo.requirements; track $index) {
+                                    <small>{{ req.trigger }}: {{ req.minLevel }} {{req.minHappiness ? 'min-happiness:' + req.minHappiness : ''}}</small>
+                                    <small>{{ req.trigger !='level-up' ? req.item : '' }}</small>
+                                }
                             </div>
                         }
                         </div>
