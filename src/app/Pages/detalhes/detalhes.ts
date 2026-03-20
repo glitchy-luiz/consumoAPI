@@ -1,7 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { Pokemon } from '../../Services/pokemon';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IDetalhesVM } from '../../Interfaces/IDetalhesVM.interface';
+import { Ability, IDetalhesVM } from '../../Interfaces/IDetalhesVM.interface';
 import { firstValueFrom } from 'rxjs';
 import { EvolutionStage, IEvolution, Requirement } from '../../Interfaces/IEvolutionVM.interface';
 import { Move } from '../../Components/move/move';
@@ -40,8 +40,9 @@ export class Detalhes implements OnInit{
     const evolutionChain: any = await firstValueFrom(
       this.pokemonService.getByUrl(species.evolution_chain.url)
     );
-    console.log(evolutionChain)
+    // console.log(evolutionChain)
 
+    const abilitiesList:Ability[] =  await this.loadAbilities(pokemon)
     const stats = this.statsHandle(pokemon)
     const moves = pokemon.moves.map((m:any) => m.move.name)
 
@@ -58,6 +59,7 @@ export class Detalhes implements OnInit{
       sprite: pokemon.sprites.front_default,
       types: pokemon.types.map((t:any) => t.type.name),
 
+      abilities: abilitiesList,
       stats: stats,
       moves: moves,
       evolutions: evolutionVM,
@@ -66,6 +68,8 @@ export class Detalhes implements OnInit{
       rawSpecies: species,
       rawEvolution: evolutionChain,
     });
+
+    console.log(this.detalhes())
 
   }
 
@@ -89,6 +93,26 @@ export class Detalhes implements OnInit{
       }
     })
     return stats
+  }
+
+  async loadAbilities(pokemon: any){
+
+    const promises = pokemon.abilities.map((item:any) =>{
+      return firstValueFrom(this.pokemonService.getAbilityByName(item.ability.name))
+    })
+
+    const bruto = await Promise.all(promises)
+
+    const abObj: Ability[] = bruto.map(
+      ((ab, index) => ({
+        name: ab.name,
+        hidden: pokemon.abilities[index].is_hidden,
+        effect: ab.effect_entries.find((e:any):any => e.language.name === 'en').effect,
+        shortEffect: ab.effect_entries.find((e:any) => e.language.name === 'en').short_effect
+      }))
+    )
+
+    return abObj
   }
 
   home(){

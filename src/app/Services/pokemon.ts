@@ -38,6 +38,10 @@ export class Pokemon {
     return this.http.get(this.url + 'move/' + name)
   }
 
+  getAbilityByName(name: string){
+    return this.http.get(this.url + 'ability/' + name)
+  }
+
   getByUrl(url: string){
     return this.http.get(url)
   }

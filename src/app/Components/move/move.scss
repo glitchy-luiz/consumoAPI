@@ -18,26 +18,56 @@
 
 // css por tipo
 .fire{
-    background-color: rgb(220, 20, 60, 0.3);
+    background-color: rgb(220, 20, 60, 0.4);
 }
 .water{
-    background-color: rgb(10, 147, 211, 0.5);
+    background-color: rgba(23, 130, 180, 0.4);
 }
-.water{
-    background-color: rgb(10, 147, 211, 0.5);
+.grass{
+    background-color: rgba(5, 247, 57, 0.4);
 }
-.water{
-    background-color: rgb(10, 147, 211, 0.5);
+.electric{
+    background-color: rgba(211, 226, 2, 0.4);
 }
-.water{
-    background-color: rgb(10, 147, 211, 0.5);
+.bug{
+    background-color: rgba(11, 139, 39, 0.4);
 }
-.water{
-    background-color: rgb(10, 147, 211, 0.5);
+.poison{
+    background-color: rgba(93, 10, 100, 0.4);
 }
-.water{
-    background-color: rgb(10, 147, 211, 0.5);
+.steel{
+    background-color: rgba(82, 81, 79, 0.4);
 }
-.water{
-    background-color: rgb(10, 147, 211, 0.5);
+.fairy{
+    background-color: rgba(226, 21, 165, 0.4);
+}
+.dragon{
+    background-color: rgb(10, 147, 211, 0.4);
+}
+.ghost{
+    background-color: rgba(134, 4, 173, 0.4);
+}
+.dark{
+    background-color: rgba(28, 29, 39, 0.4);
+}
+.psychic{
+    background-color: rgba(204, 10, 211, 0.4);
+}
+.fighting{
+    background-color: rgba(187, 93, 5, 0.4);
+}
+.normal{
+    background-color: rgba(160, 160, 158, 0.4);
+}
+.rock{
+    background-color: rgba(116, 81, 18, 0.4);
+}
+.ice{
+    background-color: rgba(33, 179, 247, 0.4);
+}
+.flying{
+    background-color: rgba(144, 206, 235, 0.4);
+}
+.ground{
+    background-color: rgba(82, 48, 9, 0.4);
 }

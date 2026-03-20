@@ -32,6 +32,13 @@
             </div>
             <div class="habilities">
                 <h3>Habilidades</h3>
+                @if(detalhes()?.abilities){
+                    <ul>
+                        @for (ability of detalhes()?.abilities; track $index) {
+                            <li>{{ability.name}} {{ability.hidden ? '(Habilidade secreta)' : ''}}: {{ability.shortEffect}}</li>
+                        }
+                    </ul>
+                }
             </div>
         </div>
 

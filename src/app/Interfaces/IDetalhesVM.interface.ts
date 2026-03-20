@@ -6,6 +6,7 @@ export interface IDetalhesVM{
   sprite: string;
   types: string[];
 
+  abilities: Ability[]
   stats: Stat[];
   moves: string[];
 
@@ -16,9 +17,16 @@ export interface IDetalhesVM{
   rawEvolution: any;
 };
 
-type Stat = {
-    name: string;
-    value: number;
-    percent: number
-    color: string
+export type Stat = {
+  name: string;
+  value: number;
+  percent: number
+  color: string
+}
+
+export type Ability = {
+  name: string
+  hidden: boolean
+  effect: string
+  shortEffect: string
 }
