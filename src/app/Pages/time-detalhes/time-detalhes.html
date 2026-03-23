@@ -1,0 +1,25 @@
+<h1>Time: {{time.nome}}</h1>
+@for (membro of time.membros; track $index) {
+    <p>{{membro.pokemon.name}}</p>
+    <img [src]="membro.pokemon.sprite" alt="">
+
+    <div class="stats">
+        <h3>Status</h3>
+        @for(stat of membro.pokemon.stats; track $index){
+            <div class="stat">
+                <span class="label">{{ stat.name }}:</span>
+                <span class="value">{{ stat.value }}</span>
+
+                <div class="bar">
+                    <div
+                    class="fill"
+                    [style.width.%]="stat.percent"
+                    [style.background]="stat.color">
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<h2>Stats Gerais</h2>

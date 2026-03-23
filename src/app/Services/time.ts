@@ -32,8 +32,8 @@ export class Time {
     );
   }
 
-  getTeam(id: string) {
-    return this.times().find(t => t.id === id) ?? null;
+  getTeam(nome: string) {
+    return this.times().find(t => t.nome === nome) ?? null;
   }
 
 }

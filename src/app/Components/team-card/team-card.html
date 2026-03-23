@@ -1,5 +1,6 @@
-<h2>{{time()?.nome}}</h2>
-
-@for (item of time()?.membros; track $index) {
-    <img [src]="item.pokemon.sprite" alt="">
-}
+<div (click)="timeDetalhe()" class="card">
+    <h2>{{time()?.nome}}</h2>
+    @for (item of time()?.membros; track $index) {
+        <img [src]="item.pokemon.sprite" alt="">
+    }
+</div>

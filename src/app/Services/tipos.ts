@@ -86,4 +86,13 @@ export class Tipos {
       sprite: t.sprite
     }));
   }
+
+  mergeRelationsList(relations: IRelations[]){
+    let mergedlist: IRelations = MockTipo.giveEmptyRelations()
+    relations.map((relation) => {
+      mergedlist.fraquezas = [...mergedlist.fraquezas, ...relation.fraquezas]
+    })
+
+    return mergedlist
+  }
 }
