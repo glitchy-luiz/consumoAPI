@@ -1,5 +1,5 @@
 <button (click)="home()">Voltar</button>
-@defer (when relations()) {
+@defer (when detalhes()) {
     <div class="grid">
         <div class="rightContent">
             <div class="head">
@@ -73,23 +73,31 @@
                     <h3>Vantagens:</h3>
                     @for (item of relations(); track $index) {
                         @for(vtg of relations()[$index].vantagens; track $index){
-                            <img [src]='item.vantagens[$index].sprite' alt="" srcset="">
+                            <img [src]='vtg.sprite' alt="" srcset="">
                         }
                     }
                 </div>
                 <div class="fraquezas">
                     <h3>Franquezas:</h3>
                     @for (item of relations(); track $index) {
-                        @for(vtg of relations()[$index].fraquezas; track $index){
-                            <img [src]='item.fraquezas[$index].sprite' alt="" srcset="">
+                        @for(fqz of relations()[$index].fraquezas; track $index){
+                            <img [src]='fqz.sprite' alt="" srcset="">
                         }
                     }
                 </div>
                 <div class="resis">
                     <h3>Resistências:</h3>
                     @for (item of relations(); track $index) {
-                        @for(vtg of relations()[$index].resistencias; track $index){
-                            <img [src]='item.resistencias[$index].sprite' alt="" srcset="">
+                        @for(resis of relations()[$index].resistencias; track $index){
+                            <img [src]='resis.sprite' alt="" srcset="">
+                        }
+                    }
+                </div>
+                <div class="imunidades">
+                    <h3>Imunidades:</h3>
+                    @for (item of relations(); track $index) {
+                        @for(imu of relations()[$index].imunidades; track $index){
+                            <img [src]='imu.sprite' alt="" srcset="">
                         }
                     }
                 </div>

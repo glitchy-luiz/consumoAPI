@@ -17,7 +17,6 @@ import MockTipo from '../../Mocks/mockTipo';
 })
 export class Detalhes implements OnInit{
   detalhes = signal<IDetalhesVM | null>(null)
-  // relations:IRelations[] = [MockTipo.giveEmptyRelations()]
   relations = signal<IRelations[]>([MockTipo.giveEmptyRelations()])
   showMoves: boolean = false
 

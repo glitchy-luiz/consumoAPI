@@ -60,58 +60,30 @@ export class Tipos {
   async getDamageRelationsByTypes(types: ITipo[]){
     
     const relationsTypes: IRelations[] = await Promise.all(types.map(async (tipo) => {
-      const relationsType:IRelations = MockTipo.giveEmptyRelations()
-
-      const vantagens = await Promise.all(tipo.vantagens.map((vtg:any) => firstValueFrom(
-        this.getTipoCached(vtg.name)
-      )))
-      const vantagensList: Relation[] = vantagens.map(vtg => ({
-        nome: vtg.nome,
-        sprite: vtg.sprite
-      }))
-      relationsType.vantagens = vantagensList
-
-      const fraquezas = await Promise.all(tipo.fraquezas.map((fqz:any) => firstValueFrom(
-        this.getTipoCached(fqz.name)
-      )))
-      const fraquezasList: Relation[] = fraquezas.map(fqz => ({
-        nome: fqz.nome,
-        sprite: fqz.sprite
-      }))
-      relationsType.fraquezas = fraquezasList
-  
-      const resistencias = await Promise.all(tipo.resistencias.map((resis:any) => firstValueFrom(
-        this.getTipoCached(resis.name)
-      )))
-      const resistenciasList: Relation[] = resistencias.map(resis => ({
-        nome: resis.nome,
-        sprite: resis.sprite
-      }))
-      relationsType.resistencias = resistenciasList
-  
-      const fraquezasOfencivas = await Promise.all(tipo.fraquezasOfencivas.map((fqo:any) => firstValueFrom(
-        this.getTipoCached(fqo.name)
-      )))
-      const fraquezasOfencivasList: Relation[] = fraquezasOfencivas.map(fqo => ({
-        nome: fqo.nome,
-        sprite: fqo.sprite
-      }))
-      relationsType.fraquezasOfencivas = fraquezasOfencivasList
-  
-      const imunidades = await Promise.all(tipo.imunidades.map((imun:any) => firstValueFrom(
-        this.getTipoCached(imun.name)
-      )))
-      const imunidadesList: Relation[] = imunidades.map(imun => ({
-        nome: imun.nome,
-        sprite: imun.sprite
-      }))
-      relationsType.imunidades = imunidadesList
-
-      console.log(relationsType)
+      const relationsType:IRelations = {
+        vantagens: await this.resolveRelations(tipo.vantagens),
+        fraquezas: await this.resolveRelations(tipo.fraquezas),
+        resistencias: await this.resolveRelations(tipo.resistencias),
+        fraquezasOfencivas: await this.resolveRelations(tipo.fraquezasOfencivas),
+        imunidades: await this.resolveRelations(tipo.imunidades)
+      }
       return relationsType
     }))
 
     return relationsTypes
 
+  }
+
+  private async resolveRelations(typeNames: string[]): Promise<Relation[]> {
+    const types = await Promise.all(
+      typeNames.map((name:any) =>
+        firstValueFrom(this.getTipoCached(name.name))
+      )
+    );
+
+    return types.map(t => ({
+      nome: t.nome,
+      sprite: t.sprite
+    }));
   }
 }
