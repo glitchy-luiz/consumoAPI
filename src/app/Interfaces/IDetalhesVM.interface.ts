@@ -1,10 +1,11 @@
 import { IEvolution } from "./IEvolutionVM.interface";
+import { ITipo } from "./ITipo.interface";
 
 export interface IDetalhesVM{
   id: number;
   name: string;
   sprite: string;
-  types: string[];
+  types: ITipo[];
 
   abilities: Ability[]
   stats: Stat[];

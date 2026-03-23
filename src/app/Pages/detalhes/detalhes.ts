@@ -5,6 +5,9 @@ import { Ability, IDetalhesVM } from '../../Interfaces/IDetalhesVM.interface';
 import { firstValueFrom } from 'rxjs';
 import { EvolutionStage, IEvolution, Requirement } from '../../Interfaces/IEvolutionVM.interface';
 import { Move } from '../../Components/move/move';
+import { IRelations, ITipo } from '../../Interfaces/ITipo.interface';
+import { Tipos } from '../../Services/tipos';
+import MockTipo from '../../Mocks/mockTipo';
 
 @Component({
   selector: 'app-detalhes',
@@ -14,9 +17,10 @@ import { Move } from '../../Components/move/move';
 })
 export class Detalhes implements OnInit{
   detalhes = signal<IDetalhesVM | null>(null)
+  relations = signal<IRelations[]>([MockTipo.giveEmptyRelations()])
   showMoves: boolean = false
 
-  constructor(private pokemonService:Pokemon, private activeRoute:ActivatedRoute, private router:Router){}
+  constructor(private pokemonService:Pokemon, private activeRoute:ActivatedRoute, private router:Router, private tipoService: Tipos){}
   
   ngOnInit(): void {
     this.activeRoute.paramMap.subscribe(params => {
@@ -42,6 +46,9 @@ export class Detalhes implements OnInit{
     );
     // console.log(evolutionChain)
 
+    const tipos: ITipo[] =  await Promise.all(pokemon.types.map((tipo:any) => firstValueFrom(
+      this.tipoService.getTipoCached(tipo.type.name)
+    )))
     const abilitiesList:Ability[] =  await this.loadAbilities(pokemon)
     const stats = this.statsHandle(pokemon)
     const moves = pokemon.moves.map((m:any) => m.move.name)
@@ -52,12 +59,11 @@ export class Detalhes implements OnInit{
 
     await hydrateEvolutionSprites(evolutionVM, this.pokemonService);
 
-
     this.detalhes.set({
       id: pokemon.id,
       name: pokemon.name,
       sprite: pokemon.sprites.front_default,
-      types: pokemon.types.map((t:any) => t.type.name),
+      types: tipos,
 
       abilities: abilitiesList,
       stats: stats,
@@ -69,7 +75,9 @@ export class Detalhes implements OnInit{
       rawEvolution: evolutionChain,
     });
 
-    console.log(this.detalhes())
+    
+    this.relations.set(await this.loadTypeRelations(this.detalhes()?.types))
+    // console.log(this.relations())
 
   }
 
@@ -95,14 +103,16 @@ export class Detalhes implements OnInit{
     return stats
   }
 
-  async loadAbilities(pokemon: any){
+  loadTypeRelations(tipos: any){
+    return this.tipoService.getDamageRelationsByTypes(tipos)
+  }
 
+  async loadAbilities(pokemon: any){
     const promises = pokemon.abilities.map((item:any) =>{
       return firstValueFrom(this.pokemonService.getAbilityByName(item.ability.name))
     })
 
     const bruto = await Promise.all(promises)
-
     const abObj: Ability[] = bruto.map(
       ((ab, index) => ({
         name: ab.name,

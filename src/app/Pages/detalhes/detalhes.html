@@ -7,7 +7,15 @@
                 <p>Pokedex: {{detalhes()?.id}}</p>
             </div>
             <img class="sprite" [src]="detalhes()!.sprite" alt="">
-            <h3>Tipos: {{detalhes()!.types[0]}} {{detalhes()!.types[1] ? 'e ' + detalhes()!.types[1] : ''}}</h3>
+            <div class="tipo">
+                <h3>Tipos: </h3>
+                <img class="tipo_sprite" [src]='detalhes()!.types[0].sprite' alt="">
+                <h3>{{detalhes()!.types[0].nome}}</h3>
+                @if(detalhes()!.types[1]){
+                    <img class="tipo_sprite" [src]='detalhes()!.types[1].sprite' alt="">
+                    <h3>e {{detalhes()!.types[1].nome}}</h3>
+                }
+            </div>
             <div class="evolutions">
                 <h3>Evoluções</h3>
                 @for (stage of detalhes()!.evolutions.stages; track $index) {
@@ -61,9 +69,38 @@
                 }
             </div>
             <div class="weakness">
-                <h3>Vantagens:</h3>
-                <h3>Franquezas:</h3>
-                <h3>Resistências:</h3>
+                <div class="vantagens">
+                    <h3>Vantagens:</h3>
+                    @for (item of relations(); track $index) {
+                        @for(vtg of relations()[$index].vantagens; track $index){
+                            <img [src]='vtg.sprite' alt="" srcset="">
+                        }
+                    }
+                </div>
+                <div class="fraquezas">
+                    <h3>Franquezas:</h3>
+                    @for (item of relations(); track $index) {
+                        @for(fqz of relations()[$index].fraquezas; track $index){
+                            <img [src]='fqz.sprite' alt="" srcset="">
+                        }
+                    }
+                </div>
+                <div class="resis">
+                    <h3>Resistências:</h3>
+                    @for (item of relations(); track $index) {
+                        @for(resis of relations()[$index].resistencias; track $index){
+                            <img [src]='resis.sprite' alt="" srcset="">
+                        }
+                    }
+                </div>
+                <div class="imunidades">
+                    <h3>Imunidades:</h3>
+                    @for (item of relations(); track $index) {
+                        @for(imu of relations()[$index].imunidades; track $index){
+                            <img [src]='imu.sprite' alt="" srcset="">
+                        }
+                    }
+                </div>
             </div>
             <div class="details">
                 <h3>Detalhes</h3>
