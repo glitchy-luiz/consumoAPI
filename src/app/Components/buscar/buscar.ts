@@ -3,7 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Pokemon } from '../../Services/pokemon';
 import { ICard } from '../../Interfaces/ICard.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { finalize, from, map, mergeMap, switchMap, toArray } from 'rxjs';
+import { from, map, mergeMap, switchMap, toArray } from 'rxjs';
 
 @Component({
   selector: 'app-buscar',
@@ -13,7 +13,6 @@ import { finalize, from, map, mergeMap, switchMap, toArray } from 'rxjs';
 })
 export class Buscar {
   pesquisa = output<ICard[]>()
-  // carregando = signal<boolean>(false)
 
   barra = new FormGroup({
     busca: new FormControl(''),

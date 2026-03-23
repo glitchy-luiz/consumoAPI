@@ -8,6 +8,9 @@ import { Move } from '../../Components/move/move';
 import { IRelations, ITipo } from '../../Interfaces/ITipo.interface';
 import { Tipos } from '../../Services/tipos';
 import MockTipo from '../../Mocks/mockTipo';
+import { Time } from '../../Services/time';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { AddTeam } from '../../Components/add-team/add-team';
 
 @Component({
   selector: 'app-detalhes',
@@ -20,7 +23,14 @@ export class Detalhes implements OnInit{
   relations = signal<IRelations[]>([MockTipo.giveEmptyRelations()])
   showMoves: boolean = false
 
-  constructor(private pokemonService:Pokemon, private activeRoute:ActivatedRoute, private router:Router, private tipoService: Tipos){}
+  constructor(
+    private pokemonService:Pokemon, 
+    private activeRoute:ActivatedRoute, 
+    private router:Router, 
+    private tipoService: Tipos,
+    private timeService: Time,
+    private dialogRef: MatDialog
+  ){}
   
   ngOnInit(): void {
     this.activeRoute.paramMap.subscribe(params => {
@@ -132,6 +142,23 @@ export class Detalhes implements OnInit{
   goToEvolution(name: string){
     this.router.navigate(['detalhes/', name])
   }
+
+  addTime(timeId: string){
+    this.timeService.addTeam(timeId)
+    this.timeService.addPokemonToTeam('1', {
+      pokemon: this.detalhes()!,
+      tipoRelation: this.relations()
+    })
+  }
+
+  openTimeModal(){
+    const dialogConfig = new MatDialogConfig
+    dialogConfig.width = '600px'
+    dialogConfig.height = '600px'
+    dialogConfig.data = {detalhes: this.detalhes(), relations: this.relations()}
+    this.dialogRef.open(AddTeam, dialogConfig)
+  }
+
 }
 
 function mapEvolutionRequirements(detail: any): Requirement {
