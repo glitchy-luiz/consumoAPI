@@ -1,5 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { ITeam, TeamMember } from '../Interfaces/ITeam.interface';
+import { IRelations } from '../Interfaces/ITipo.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -22,11 +23,11 @@ export class Time {
     ]);
   }
 
-  addPokemonToTeam(teamNome: string, pokemon: TeamMember) {
+  addPokemonToTeam(teamNome: string, pokemon: TeamMember, cobertura: IRelations[]) {
     this._times.update(times =>
       times.map(team =>
         team.nome === teamNome
-          ? { ...team, membros: [...team.membros, pokemon] }
+          ? { ...team, membros: [...team.membros, pokemon], cobertura: [...team.cobertura, ...cobertura ] }
           : team
       )
     );

@@ -23,3 +23,19 @@
 }
 
 <h2>Stats Gerais</h2>
+<h3>vantagens</h3>
+@for (item of relations()?.vantagens; track $index) {
+    <img [src]="item.sprite" alt="">
+}
+<h3>Fraquezas</h3>
+@for (item of relations()?.fraquezas; track $index) {
+    <img [src]="item.sprite" alt="">
+}
+<h3>Resistencia</h3>
+@for (item of relations()?.resistencias; track $index) {
+    <img [src]="item.sprite" alt="">
+}
+<h3>imunidades</h3>
+@for (item of relations()?.imunidades; track $index) {
+    <img [src]="item.sprite" alt="">
+}

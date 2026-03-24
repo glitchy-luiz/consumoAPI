@@ -83,16 +83,64 @@ export class Tipos {
 
     return types.map(t => ({
       nome: t.nome,
+      quantidade: 1,
       sprite: t.sprite
     }));
   }
 
-  mergeRelationsList(relations: IRelations[]){
-    let mergedlist: IRelations = MockTipo.giveEmptyRelations()
-    relations.map((relation) => {
-      mergedlist.fraquezas = [...mergedlist.fraquezas, ...relation.fraquezas]
-    })
+  mergeRelationsList(relations: IRelations[]): IRelations{
+    //o reduce acumula o valor entre iterações, acc = acumulador e relation é o valor total/inicial
+    const mergedlist: IRelations = relations.reduce((acc, relation) => {
 
+      acc.fraquezas.push(...relation.fraquezas)
+      acc.vantagens.push(...relation.vantagens)
+      acc.fraquezasOfencivas.push(...relation.fraquezasOfencivas)
+      acc.resistencias.push(...relation.resistencias)
+      acc.imunidades.push(...relation.imunidades)
+      return acc
+    }, {
+      fraquezas: [],
+      vantagens: [],
+      fraquezasOfencivas: [],
+      resistencias: [],
+      imunidades: []
+    })
     return mergedlist
   }
+
+  // verifyMultipleTypes(relation:IRelations){
+  //   const list:IRelations = relation.fraquezas.reduce((acc, fqz, index) => {
+  //     acc.nome
+  //     acc.quantidade
+  //     acc.sprite
+  //     return acc
+  //   }, {
+  //     nome: '',
+  //     quantidade: 0,
+  //     sprite: ''
+  //   })
+  //   return list
+  // }
+
+  // a(relation:IRelations){
+  //   const c:IRelations = {
+  //     fraquezas: this.magica(relation.fraquezas)
+  //   }
+
+  //   const b:IRelations = relation.fraquezas.map((a, i) =>{
+  //     if(relation.fraquezas[i].nome === a.nome){
+  //       relation.fraquezas[i].quantidade +=1 
+  //     }else{
+
+  //     }
+  //   })
+  // }
+
+  // magica(relacaoList:Relation[]){
+  //   const novaLista:Relation[] = relacaoList.map(a => {
+      
+  //   })
+
+  //   return novaLista
+  // }
 }

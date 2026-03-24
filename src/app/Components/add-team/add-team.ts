@@ -39,11 +39,11 @@ export class AddTeam {
 
     if(titulo){
       this.timeService.addTeam(titulo)
-      this.timeService.addPokemonToTeam(titulo, pokemon)
+      this.timeService.addPokemonToTeam(titulo, pokemon, pokemon.tipoRelation)
     }
 
     if(time){
-      this.timeService.addPokemonToTeam(time, pokemon)
+      this.timeService.addPokemonToTeam(time, pokemon, pokemon.tipoRelation)
     }
     this.dialogRef.close()
   }
