@@ -1,7 +1,7 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, Inject, OnInit, signal } from '@angular/core';
 import { Time } from '../../Services/time';
-import { ActivatedRoute } from '@angular/router';
-import { ITeam } from '../../Interfaces/ITeam.interface';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ITeam, TeamMember } from '../../Interfaces/ITeam.interface';
 import MockTeam from '../../Mocks/mockTeam';
 import { Tipos } from '../../Services/tipos';
 import { IRelations } from '../../Interfaces/ITipo.interface';
@@ -13,9 +13,15 @@ import { IRelations } from '../../Interfaces/ITipo.interface';
   styleUrl: './time-detalhes.scss',
 })
 export class TimeDetalhes implements OnInit{
-  time:ITeam = MockTeam.giveEmptyTeam()
+  // time:ITeam = MockTeam.giveEmptyTeam()
+  time = signal<ITeam>(MockTeam.giveEmptyTeam())
   relations = signal<IRelations | null>(null)
-  constructor(private activeRoute: ActivatedRoute, private timeService: Time, private tipoService: Tipos){}
+  constructor(
+    private activeRoute: ActivatedRoute, 
+    private timeService: Time, 
+    private router: Router,
+    @Inject(Tipos) private tipoService:Tipos
+  ){}
 
   ngOnInit(): void {
     this.activeRoute.paramMap.subscribe(params => {
@@ -26,10 +32,18 @@ export class TimeDetalhes implements OnInit{
   }
   
   async loadInfo(id:string){
-    this.time = await this.timeService.getTeam(id)!
-    this.relations.set(this.tipoService.mergeRelationsList(this.time.cobertura))
+    this.time.set(await this.timeService.getTeam(id)!)
+    this.relations.set(this.tipoService.mergeRelationsList(this.time().cobertura))
     console.log(this.relations())
   }
 
+  home(){
+    this.router.navigate([''])
+  }
+
+  deletePokemon(pkm: TeamMember){
+    const newList = this.time().membros.filter(item => item != pkm)
+    this.time().membros = newList
+  }
 
 }

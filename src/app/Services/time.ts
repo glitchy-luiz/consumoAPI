@@ -33,6 +33,12 @@ export class Time {
     );
   }
 
+  // deletePokemonofTeam(time:ITeam, pokemon:TeamMember){
+  //   this._times.update(times => ({
+  //     const id = times.find(team => team == time)
+  //   }))
+  // }
+
   getTeam(nome: string) {
     return this.times().find(t => t.nome === nome) ?? null;
   }

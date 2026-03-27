@@ -105,42 +105,38 @@ export class Tipos {
       resistencias: [],
       imunidades: []
     })
-    return mergedlist
+    return this.consolidateRelations(mergedlist)
   }
 
-  // verifyMultipleTypes(relation:IRelations){
-  //   const list:IRelations = relation.fraquezas.reduce((acc, fqz, index) => {
-  //     acc.nome
-  //     acc.quantidade
-  //     acc.sprite
-  //     return acc
-  //   }, {
-  //     nome: '',
-  //     quantidade: 0,
-  //     sprite: ''
-  //   })
-  //   return list
-  // }
+  consolidateRelations(relations: IRelations): IRelations {
+    return {
+      fraquezas: this.consolidateRelationList(relations.fraquezas),
+      vantagens: this.consolidateRelationList(relations.vantagens),
+      resistencias: this.consolidateRelationList(relations.resistencias),
+      fraquezasOfencivas: this.consolidateRelationList(relations.fraquezasOfencivas),
+      imunidades: this.consolidateRelationList(relations.imunidades),
+    };
+  }
 
-  // a(relation:IRelations){
-  //   const c:IRelations = {
-  //     fraquezas: this.magica(relation.fraquezas)
-  //   }
+  private consolidateRelationList(list: Relation[]): Relation[] {
+    const map = new Map<string, Relation>();
 
-  //   const b:IRelations = relation.fraquezas.map((a, i) =>{
-  //     if(relation.fraquezas[i].nome === a.nome){
-  //       relation.fraquezas[i].quantidade +=1 
-  //     }else{
+    for (const item of list) {
+      const existing = map.get(item.nome);
 
-  //     }
-  //   })
-  // }
+      if (existing) {
+        // Tipo já existe → incrementa quantidade
+        existing.quantidade += item.quantidade || 1;
+      } else {
+        // Primeiro aparecimento do tipo
+        map.set(item.nome, {
+          nome: item.nome,
+          sprite: item.sprite,
+          quantidade: item.quantidade || 1,
+        });
+      }
+    }
 
-  // magica(relacaoList:Relation[]){
-  //   const novaLista:Relation[] = relacaoList.map(a => {
-      
-  //   })
-
-  //   return novaLista
-  // }
+    return Array.from(map.values());
+  }
 }
