@@ -5,7 +5,7 @@
         @for (membro of time().membros; track $index) {
             <div class="membro">
                 <p>{{membro.pokemon.name}}</p>
-                <img [src]="membro.pokemon.sprite" alt="">
+                <img [src]="membro.pokemon.sprite" alt="" (click)="details(membro)">
                 <button (click)="deletePokemon(membro)">Excluir</button>
             
                 <div class="stats">

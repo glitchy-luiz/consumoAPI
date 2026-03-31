@@ -53,6 +53,7 @@
         <div class="leftContent">
             <div class="stats">
                 <h3>Status</h3>
+                <p class="label">Total: {{totalStats}}</p>
                 @for(stat of detalhes()?.stats; track $index){
                     <div class="stat">
                         <span class="label">{{ stat.name }}:</span>

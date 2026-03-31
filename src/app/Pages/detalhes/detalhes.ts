@@ -21,7 +21,7 @@ export class Detalhes implements OnInit{
   detalhes = signal<IDetalhesVM | null>(null)
   relations = signal<IRelations[]>([MockTipo.giveEmptyRelations()])
   showMoves: boolean = false
-
+  totalStats: number = 0
   constructor(
     private pokemonService:Pokemon, 
     private activeRoute:ActivatedRoute, 
@@ -83,6 +83,9 @@ export class Detalhes implements OnInit{
       rawEvolution: evolutionChain,
     });
 
+    for (const i of this.detalhes()?.stats!) {
+      this.totalStats += i.value 
+    }
     
     this.relations.set(await this.loadTypeRelations(this.detalhes()?.types))
     // console.log(this.relations())

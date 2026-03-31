@@ -34,7 +34,6 @@ export class TimeDetalhes implements OnInit{
   async loadInfo(id:string){
     this.time.set(await this.timeService.getTeam(id)!)
     this.relations.set(this.tipoService.mergeRelationsList(this.time().cobertura))
-    console.log(this.relations())
   }
 
   home(){
@@ -42,8 +41,34 @@ export class TimeDetalhes implements OnInit{
   }
 
   deletePokemon(pkm: TeamMember){
-    const newList = this.time().membros.filter(item => item != pkm)
-    this.time().membros = newList
+    this.timeService.deletePokemonToTeam(this.time().nome, pkm, pkm.tipoRelation)
+    this.ngOnInit()
+  }
+
+  details(pkm: TeamMember){
+    this.router.navigate(['detalhes/' + pkm.pokemon.id])
+  }
+
+  statsHandle(pkm: any){
+    const maxStats:number = 255
+    
+    const getColor = (percent: number) => {
+      if (percent < 30) return '#e53935';
+      if (percent < 60) return '#fbc02d';
+      return '#43a047';
+    };
+
+    const stats = pkm.stats.map((stat:any) => {
+      const value = stat.base_stat
+      const percent = Math.round((value / maxStats) * 100)
+      return{
+        name: stat.stat.name.toUpperCase(), 
+        value,
+        percent,
+        color: getColor(percent)
+      }
+    })
+    return stats
   }
 
 }
