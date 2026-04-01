@@ -13,3 +13,9 @@ export type TeamMember= {
     pokemon: IDetalhesVM
     tipoRelation: IRelations[]
 }
+
+export type TeamStatComparison = {
+  statName: string;
+  maxValue: number;
+  winners: number[];
+};

@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit, signal } from '@angular/core';
 import { Time } from '../../Services/time';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ITeam, TeamMember } from '../../Interfaces/ITeam.interface';
+import { ITeam, TeamMember, TeamStatComparison } from '../../Interfaces/ITeam.interface';
 import MockTeam from '../../Mocks/mockTeam';
 import { Tipos } from '../../Services/tipos';
 import { IRelations } from '../../Interfaces/ITipo.interface';
@@ -16,6 +16,7 @@ export class TimeDetalhes implements OnInit{
   // time:ITeam = MockTeam.giveEmptyTeam()
   time = signal<ITeam>(MockTeam.giveEmptyTeam())
   relations = signal<IRelations | null>(null)
+  analysis!: TeamStatComparison[]
   constructor(
     private activeRoute: ActivatedRoute, 
     private timeService: Time, 
@@ -34,6 +35,7 @@ export class TimeDetalhes implements OnInit{
   async loadInfo(id:string){
     this.time.set(await this.timeService.getTeam(id)!)
     this.relations.set(this.tipoService.mergeRelationsList(this.time().cobertura))
+    this.analysis = this.timeService.getStatsComparison(this.time())
   }
 
   home(){
@@ -47,6 +49,15 @@ export class TimeDetalhes implements OnInit{
 
   details(pkm: TeamMember){
     this.router.navigate(['detalhes/' + pkm.pokemon.id])
+  }
+
+  isBestStat(
+    analysis: TeamStatComparison[],
+    pokemonId: number,
+    statName: string
+  ): boolean {
+    const entry = analysis.find(a => a.statName === statName);
+    return entry ? entry.winners.includes(pokemonId) : false;
   }
 
   statsHandle(pkm: any){

@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { ITeam, TeamMember } from '../Interfaces/ITeam.interface';
+import { ITeam, TeamMember, TeamStatComparison } from '../Interfaces/ITeam.interface';
 import { IRelations } from '../Interfaces/ITipo.interface';
 
 @Injectable({
@@ -51,21 +51,54 @@ export class Time {
     return this.times().find(t => t.nome === nome) ?? null;
   }
 
-  private getMaxStats(team: TeamMember[]): Map<string, number> {
-    const maxStats = new Map<string, number>();
+  getStatsComparison(team: ITeam): TeamStatComparison[] {
+    const map = new Map<string, TeamStatComparison>();
 
-    for (const pokemon of team) {
-      for (const stat of pokemon.pokemon.stats) {
-        const currentMax = maxStats.get(stat.name) ?? 0;
+    for (const membro of team.membros) {
+      const pokemon = membro.pokemon;
 
-        if (stat.value > currentMax) {
-          maxStats.set(stat.name, stat.value);
+      for (const stat of pokemon.stats) {
+        const entry = map.get(stat.name);
+
+        if (!entry) {
+          map.set(stat.name, {
+            statName: stat.name,
+            maxValue: stat.value,
+            winners: [pokemon.id],
+          });
+          continue;
+        }
+
+        if (stat.value > entry.maxValue) {
+          entry.maxValue = stat.value;
+          entry.winners = [pokemon.id];
+          continue;
+        }
+
+        if (stat.value === entry.maxValue) {
+          entry.winners.push(pokemon.id);
         }
       }
     }
 
-    return maxStats;
+    return Array.from(map.values());
   }
+
+  // private getMaxStats(team: TeamMember[]): Map<string, number> {
+  //   const maxStats = new Map<string, number>();
+
+  //   for (const pokemon of team) {
+  //     for (const stat of pokemon.pokemon.stats) {
+  //       const currentMax = maxStats.get(stat.name) ?? 0;
+
+  //       if (stat.value > currentMax) {
+  //         maxStats.set(stat.name, stat.value);
+  //       }
+  //     }
+  //   }
+
+  //   return maxStats;
+  // }
 
   // markBestStats(team: ITeam[]): ITeam[] {
   //   const maxStats = this.getMaxStats(team);
