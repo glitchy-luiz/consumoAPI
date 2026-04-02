@@ -51,11 +51,7 @@ export class TimeDetalhes implements OnInit{
     this.router.navigate(['detalhes/' + pkm.pokemon.id])
   }
 
-  isBestStat(
-    analysis: TeamStatComparison[],
-    pokemonId: number,
-    statName: string
-  ): boolean {
+  isBestStat(analysis: TeamStatComparison[], pokemonId: number, statName: string): boolean {
     const entry = analysis.find(a => a.statName === statName);
     return entry ? entry.winners.includes(pokemonId) : false;
   }
