@@ -18,5 +18,6 @@ export interface IRelations {
 
 export type Relation = {
     nome: string
+    quantidade: number
     sprite: string
 }

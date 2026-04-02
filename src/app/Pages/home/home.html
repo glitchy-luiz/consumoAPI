@@ -1,6 +1,9 @@
 <h2>Meus times</h2>
 <button (click)="allPokemons()">Pokemons</button>
 <app-buscar (pesquisa)="pesq($event)"></app-buscar>
+@for(time of times(); track time.id){
+    <app-team-card [time]="time"></app-team-card>
+}
 @if(pkms().length != 0){
     <div class="grid">
         @for(pkm of pkms(); track $index){

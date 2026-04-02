@@ -1,0 +1,12 @@
+<h1>Adicionar ao time</h1>
+<form [formGroup]="form">
+    <h2>Criar e adicionar time</h2>
+    <input formControlName="titulo" type="text">
+    <h2>Adicionar a um time existente</h2>
+    <select formControlName="time" id="">
+        @for (item of times; track $index) {
+            <option [value]="item.nome">{{item.nome}}</option>
+        }
+    </select>
+    <button (click)="adicionar()">Adicionar</button>
+</form>

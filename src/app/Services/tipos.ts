@@ -83,7 +83,60 @@ export class Tipos {
 
     return types.map(t => ({
       nome: t.nome,
+      quantidade: 1,
       sprite: t.sprite
     }));
+  }
+
+  mergeRelationsList(relations: IRelations[]): IRelations{
+    //o reduce acumula o valor entre iterações, acc = acumulador e relation é o valor total/inicial
+    const mergedlist: IRelations = relations.reduce((acc, relation) => {
+
+      acc.fraquezas.push(...relation.fraquezas)
+      acc.vantagens.push(...relation.vantagens)
+      acc.fraquezasOfencivas.push(...relation.fraquezasOfencivas)
+      acc.resistencias.push(...relation.resistencias)
+      acc.imunidades.push(...relation.imunidades)
+      return acc
+    }, {
+      fraquezas: [],
+      vantagens: [],
+      fraquezasOfencivas: [],
+      resistencias: [],
+      imunidades: []
+    })
+    return this.consolidateRelations(mergedlist)
+  }
+
+  consolidateRelations(relations: IRelations): IRelations {
+    return {
+      fraquezas: this.consolidateRelationList(relations.fraquezas),
+      vantagens: this.consolidateRelationList(relations.vantagens),
+      resistencias: this.consolidateRelationList(relations.resistencias),
+      fraquezasOfencivas: this.consolidateRelationList(relations.fraquezasOfencivas),
+      imunidades: this.consolidateRelationList(relations.imunidades),
+    };
+  }
+
+  private consolidateRelationList(list: Relation[]): Relation[] {
+    const map = new Map<string, Relation>();
+
+    for (const item of list) {
+      const existing = map.get(item.nome);
+
+      if (existing) {
+        // Tipo já existe → incrementa quantidade
+        existing.quantidade += item.quantidade || 1;
+      } else {
+        // Primeiro aparecimento do tipo
+        map.set(item.nome, {
+          nome: item.nome,
+          sprite: item.sprite,
+          quantidade: item.quantidade || 1,
+        });
+      }
+    }
+
+    return Array.from(map.values());
   }
 }
