@@ -84,37 +84,4 @@ export class Time {
     return Array.from(map.values());
   }
 
-  // private getMaxStats(team: TeamMember[]): Map<string, number> {
-  //   const maxStats = new Map<string, number>();
-
-  //   for (const pokemon of team) {
-  //     for (const stat of pokemon.pokemon.stats) {
-  //       const currentMax = maxStats.get(stat.name) ?? 0;
-
-  //       if (stat.value > currentMax) {
-  //         maxStats.set(stat.name, stat.value);
-  //       }
-  //     }
-  //   }
-
-  //   return maxStats;
-  // }
-
-  // markBestStats(team: ITeam[]): ITeam[] {
-  //   const maxStats = this.getMaxStats(team);
-
-  //   return team.map(time => ({
-  //     ...time,
-  //     membros: time.membros.map(membro => ({
-  //       ...membro,
-  //       pokemon.stat
-  //       isBest: stat.value === maxStats.get(stat.name),
-  //     })),
-  //     stats: time.membros.map(stat => ({
-  //       ...stat,
-  //       isBest: stat.value === maxStats.get(stat.name),
-  //     })),
-  //   }));
-  // }
-
 }

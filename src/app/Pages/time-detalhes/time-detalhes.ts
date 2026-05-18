@@ -17,6 +17,8 @@ export class TimeDetalhes implements OnInit{
   time = signal<ITeam>(MockTeam.giveEmptyTeam())
   relations = signal<IRelations | null>(null)
   analysis!: TeamStatComparison[]
+  noCoverageTypes = signal<any | null>(null)
+  noPresentTypes = signal<any | null>(null)
   constructor(
     private activeRoute: ActivatedRoute, 
     private timeService: Time, 
@@ -34,8 +36,11 @@ export class TimeDetalhes implements OnInit{
   
   async loadInfo(id:string){
     this.time.set(await this.timeService.getTeam(id)!)
-    this.relations.set(this.tipoService.mergeRelationsList(this.time().cobertura))
+    this.relations.set(await this.tipoService.mergeRelationsList(this.time().cobertura))
     this.analysis = this.timeService.getStatsComparison(this.time())
+    this.noCoverageTypes.set(this.tipoService.getUncoveredTypes(this.relations()!, this.tipoService.ALL_TYPES))
+
+    this.noPresentTypes.set(this.tipoService.getMissingTypes(this.time(), this.tipoService.ALL_TYPES))
   }
 
   home(){
@@ -56,26 +61,26 @@ export class TimeDetalhes implements OnInit{
     return entry ? entry.winners.includes(pokemonId) : false;
   }
 
-  statsHandle(pkm: any){
-    const maxStats:number = 255
+  // statsHandle(pkm: any){
+  //   const maxStats:number = 255
     
-    const getColor = (percent: number) => {
-      if (percent < 30) return '#e53935';
-      if (percent < 60) return '#fbc02d';
-      return '#43a047';
-    };
+  //   const getColor = (percent: number) => {
+  //     if (percent < 30) return '#e53935';
+  //     if (percent < 60) return '#fbc02d';
+  //     return '#43a047';
+  //   };
 
-    const stats = pkm.stats.map((stat:any) => {
-      const value = stat.base_stat
-      const percent = Math.round((value / maxStats) * 100)
-      return{
-        name: stat.stat.name.toUpperCase(), 
-        value,
-        percent,
-        color: getColor(percent)
-      }
-    })
-    return stats
-  }
+  //   const stats = pkm.stats.map((stat:any) => {
+  //     const value = stat.base_stat
+  //     const percent = Math.round((value / maxStats) * 100)
+  //     return{
+  //       name: stat.stat.name.toUpperCase(), 
+  //       value,
+  //       percent,
+  //       color: getColor(percent)
+  //     }
+  //   })
+  //   return stats
+  // }
 
 }

@@ -85,6 +85,24 @@
 
     <h2>Detalhes</h2>
     <h3>Tipos não presentes</h3>
+    <div class="tipos">
+        @for (item of noPresentTypes(); track $index) {
+            <div class="tipo">
+                <!-- <p>{{item.quantidade}}x</p> -->
+                <!-- <img [src]="item.sprite" alt=""> -->
+                 <span>{{item}} - </span>
+            </div>
+        }
+    </div>
 
     <h3>Tipos não cobertos</h3>
+    <div class="tipos">
+        @for (item of noCoverageTypes(); track $index) {
+            <div class="tipo">
+                <!-- <p>{{item.quantidade}}x</p> -->
+                <!-- <img [src]="item.sprite" alt=""> -->
+                 <span>{{item}} - </span>
+            </div>
+        }
+    </div>
 }

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import MockTipo from '../Mocks/mockTipo';
 import { IRelations, ITipo, Relation } from '../Interfaces/ITipo.interface';
 import { firstValueFrom, map, Observable, of, shareReplay } from 'rxjs';
+import { ITeam } from '../Interfaces/ITeam.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,12 @@ export class Tipos {
   private url = 'https://pokeapi.co/api/v2/type/'
   private tipoCache = new Map<string, ITipo>();
   private inflight = new Map<string, Observable<ITipo>>()
+  public ALL_TYPES = [
+    'normal', 'fire', 'water', 'electric', 'grass',
+    'ice', 'fighting', 'poison', 'ground', 'flying',
+    'psychic', 'bug', 'rock', 'ghost', 'dragon',
+    'dark', 'steel', 'fairy'
+  ];
 
   constructor(private http: HttpClient){}
 
@@ -18,6 +25,7 @@ export class Tipos {
     return this.http.get(this.url + name)
   }
 
+  //organiza informações do tipo de acordo com a interface de Tipo
   transformType(type:any): ITipo{
     const tipo:ITipo = MockTipo.giveEmptyTipo()
     tipo.nome = type.name
@@ -32,6 +40,7 @@ export class Tipos {
     return tipo
   }
 
+  //Guarda/pega tipos em cache
   getTipoCached(name: string): Observable<ITipo> {
     const key = name.toLowerCase();
 
@@ -57,6 +66,7 @@ export class Tipos {
     )
   }
 
+  //
   async getDamageRelationsByTypes(types: ITipo[]){
     
     const relationsTypes: IRelations[] = await Promise.all(types.map(async (tipo) => {
@@ -88,6 +98,7 @@ export class Tipos {
     }));
   }
 
+  //junta as relações de tipos e retorna uma única grande relação (util para a lista de tipos de um time)
   mergeRelationsList(relations: IRelations[]): IRelations{
     //o reduce acumula o valor entre iterações, acc = acumulador e relation é o valor total/inicial
     const mergedlist: IRelations = relations.reduce((acc, relation) => {
@@ -139,4 +150,40 @@ export class Tipos {
 
     return Array.from(map.values());
   }
+
+  //lista de nomes dos tipos que não são cobertos pelas vantagens de tipo
+  getUncoveredTypes(relations: IRelations, allTypes: string[]): string[] {
+    const covered = new Set(relations.vantagens.map(v => v.nome));
+    console.log(covered)
+    return allTypes.filter(type => !covered.has(type));
+  }
+
+  //lista de nomes dos tipos que não estão presentes em um tipo
+  getMissingTypes(team: ITeam, allTypes: string[]): string[] {
+    const teamTypes = new Set<string>();
+
+    for (const membro of team.membros) {
+      for (const tipo of membro.pokemon.types) {
+        teamTypes.add(tipo.nome);
+      }
+    }
+
+    return allTypes.filter(type => !teamTypes.has(type));
+  }
+
+  
+  async getTypesWithSprite(names: string[]): Promise<Relation[]> {
+    const tipos = await Promise.all(
+      names.map(name =>
+        firstValueFrom(this.getTipoCached(name))
+      )
+    );
+
+    return tipos.map(t => ({
+      nome: t.nome,
+      sprite: t.sprite,
+      quantidade: 0
+    }));
+  }
+
 }
